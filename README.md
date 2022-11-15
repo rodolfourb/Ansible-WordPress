@@ -2,8 +2,8 @@
 
 ## Depois dos pacotes instalados, criem uma pasta e entrem nela pelo terminal. Feito isso, execute os comandos:
 ```shell=
-git clone https://gitlab.com/o_sgoncalves/ansible-basico
-cd ansible-basico
+git clone https://github.com/rodolfourb/Ansible-WordPress
+cd Ansible-WordPress
 ```
 
 ## Dentro da pasta clonada, execute o seguinte comando para subir as máquinas:
