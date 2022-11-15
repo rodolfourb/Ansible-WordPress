@@ -2,8 +2,8 @@
 # vi: set ft=ruby :
 
 vms = {
-	'wordpress'   => {'memory' => '512', 'cpus' => 2, 'ip' => '007', 'box' => 'ubuntu/focal64', 'provision' => 'files/ansible/playbook.yml'},
-	'mysql' => {'memory' => '512', 'cpus' => 2, 'ip' => '008', 'box' => 'ubuntu/focal64', 'provision' => 'files/ansible/bd-mysql.yml'}
+	'wordpress'   => {'memory' => '512', 'cpus' => 2, 'ip' => '007', 'box' => 'almalinux/8', 'provision' => 'files/ansible/playbook.yml'},
+	'mysql' => {'memory' => '512', 'cpus' => 2, 'ip' => '008', 'box' => 'almalinux/8', 'provision' => 'files/ansible/bd-mysql.yml'}
 }
 
 Vagrant.configure('2') do |config|
