@@ -1,0 +1,86 @@
+---
+- hosts: all
+  become: yes
+  become_user: root
+  become_method: sudo
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  vars_files:
+    - vars/packages.yml
+  tasks:
+    - name: Configure hostname
+      hostname:
+        name: urbano.wordpress.local
+
+    - name: Install epel-release
+      dnf:
+        name: epel-release
+        state: present
+        update_cache: yes
+
+    - name: Install Dependecies
+      dnf:
+        name: "{{ packages }}"
+        state: present
+        update_cache: yes
+
+    - name: Configure PHP-FPM
+      lineinfile:
+        path: /etc/php-fpm.d/www.conf
+        line: "{{ item }}"
+      with_items:
+        - php_value[max_execution_time]=600
+        - php_value[memory_limit]=512M
+        - php_value[post_max_size]=256M
+        - php_value[upload_max_filesize]=2M
+        - php_value[max_input_time]=600
+        - php_value[max_input_vars]=2000
+        - php_value[date.timezone]=America/Sao_Paulo
+
+    - name: Reload php-fpm
+      service:
+        name: php-fpm
+        state: reloaded
+
+    - name: Get wordpress latest
+      shell: |
+        curl -O https://wordpress.org/latest.tar.gz \
+        && tar zxvf latest.tar.gz -C /var/www/
+
+    - name: Set permission
+      file:
+        path: /var/www/wordpress
+        state: directory
+        owner: apache
+        group: apache
+        recurse: yes
+
+    - name: Adding wordress config file httpd
+      copy:
+        src: httpd.conf
+        dest: /etc/httpd/conf.d/
+        mode: 0644
+
+    - name: Update httpd.conf
+      lineinfile:
+        path: /etc/httpd/conf/httpd.conf
+        search_string: 'DirectoryIndex index.html'
+        line: 'DirectoryIndex index.html index.php'
+
+    - name: Disable selinux Without Reboot
+      shell: /sbin/setenforce 0
+
+    - name: Stop and disable firewalld.
+      service:
+        name: firewalld
+        state: stopped
+        enabled: False
+
+    - name: Initialize Httpd
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+        
+    - name: Update timezone
+      shell: timedatectl set-timezone America/Sao_Paulo
