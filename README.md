@@ -3,7 +3,6 @@
 ### Execute:
 ```shell
 vagrant up --provider virtualbox
-vagrant status
 ```
 
 ### Wordpress :
